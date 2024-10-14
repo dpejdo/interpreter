@@ -1,44 +1,46 @@
+// File: environment.go
+
 package environment
 
 import (
 	"fmt"
-	Token "interpreter/internal/token"
+	"interpreter/internal/token"
 )
 
 type Environment struct {
-	values    map[string]interface{}
 	enclosing *Environment
+	values    map[string]interface{}
 }
 
 func NewEnvironment(enclosing *Environment) *Environment {
-	return &Environment{values: make(map[string]interface{}), enclosing: enclosing}
+	return &Environment{
+		enclosing: enclosing,
+		values:    make(map[string]interface{}),
+	}
 }
 
 func (e *Environment) Define(name string, value interface{}) {
 	e.values[name] = value
 }
 
-func (e *Environment) Get(token Token.Token) interface{} {
-	if val, exists := e.values[token.Lexeme]; exists {
-		return val
+func (e *Environment) Get(name token.Token) interface{} {
+	if value, ok := e.values[name.Lexeme]; ok {
+		return value
 	}
-
 	if e.enclosing != nil {
-		return e.enclosing.Get(token)
+		return e.enclosing.Get(name)
 	}
-	panic(fmt.Sprintf("Undefined variable %s ", token.Lexeme))
+	panic(fmt.Sprintf("Undefined variable '%s'.", name.Lexeme))
 }
 
-func (e *Environment) Assign(token Token.Token, value interface{}) {
-	if _, ok := e.values[token.Lexeme]; ok {
-		e.values[token.Lexeme] = value
+func (e *Environment) Assign(name token.Token, value interface{}) {
+	if _, ok := e.values[name.Lexeme]; ok {
+		e.values[name.Lexeme] = value
 		return
 	}
-
 	if e.enclosing != nil {
-		e.enclosing.Assign(token, value)
+		e.enclosing.Assign(name, value)
+		return
 	}
-
-	panic(fmt.Sprintf("Undefined variable %s ", token.Lexeme))
-
+	panic(fmt.Sprintf("Undefined variable '%s'.", name.Lexeme))
 }

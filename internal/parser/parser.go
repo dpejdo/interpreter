@@ -20,7 +20,7 @@ func (p *Parser) Parse() ([]expression.Stmt, error) {
 	statements := []expression.Stmt{}
 
 	for !p.isAtEnd() {
-		stmt, err := p.declaration()
+		stmt, err := p.Declaration()
 		if err != nil {
 			p.synchronize()
 			fmt.Printf("Error occured: %s", err)
@@ -35,7 +35,7 @@ func (p *Parser) Parse() ([]expression.Stmt, error) {
 	return statements, nil
 }
 func (p *Parser) assignment() (expression.Expr, error) {
-	expr, err := p.equality()
+	expr, err := p.or()
 	if err != nil {
 		return nil, err
 	}

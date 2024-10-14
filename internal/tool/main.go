@@ -19,15 +19,18 @@ func main() {
 		"Ternary   : Condition Expr, TrueExpression Expr, FalseExpression Expr",
 		"Grouping : Expr Expr",
 		"Literal  : Value interface{}",
+		"Logical : Left Expr, Operator Token.Token, Right Expr",
 		"Unary    : Operator Token.Token, Right Expr",
 		"Variable : Name Token.Token",
 	})
 
 	defineAst(outputDir, "Stmt", []string{
-		"Expression:  expr Expr",
+		"Expression:  Expr Expr",
 		"Print: Expression Expr",
 		"Var:  Name Token.Token, Initializer Expr",
-		"Block: Statements Stmt[]",
+		"While: Condition Expr, Body Stmt",
+		"Block: Statements []Stmt",
+		"If: Condition Expr, ThenBranch Stmt, ElseBranch Stmt",
 	})
 }
 
